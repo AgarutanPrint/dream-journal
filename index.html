@@ -123,9 +123,9 @@
     padding:18px; margin-bottom:16px; box-shadow:0 6px 18px rgba(43,39,64,0.06);
   }
   .section-block h2{
-    font-size:16px; margin:0 0 14px; color:var(--indigo-deep);
+    font-size:18px; margin:0 0 14px; color:var(--indigo-deep);
     display:flex; align-items:center; gap:8px;
-    font-family:'Sacramento',cursive; font-weight:400;
+    font-family:'Playfair Display',serif; font-weight:700;
   }
   .section-block h2 .ic{font-size:18px;}
   .field{margin-bottom:14px;}
@@ -234,7 +234,7 @@ const DREAMCATCHER_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXwAAAL4
 const ENTRIES_KEY = 'dream-journal:entries';
 const SETTINGS_KEY = 'dream-journal:settings';
 
-const DREAM_TYPES = ['Nightmare','Being Chased','Cathartic','Epic','Recurring','Sexual/Fantasy','Symbolic','Other','Lucid','False Awakening','Falling'];
+const DREAM_TYPES = ['Nightmare','Being Chased','Cathartic','Epic','Recurring','Romantic/Fantasy','Symbolic','Other','Lucid','False Awakening','Falling'];
 
 function blankEntry(){
   return {
@@ -378,7 +378,7 @@ function renderSettings(){
   block.innerHTML = `<h2><span class="ic">📖</span> Journal Cover</h2>`;
   function field(key, labelText, placeholder){
     const f = el('div','field');
-    f.innerHTML = `<label>${labelText}</label>`;
+    f.innerHTML = labelText ? `<label>${labelText}</label>` : '';
     const inp = el('input'); inp.type='text'; inp.value = settings[key]||''; inp.placeholder = placeholder||'';
     inp.addEventListener('input', ()=>{ settings[key]=inp.value; saveSettings(); });
     f.appendChild(inp);
@@ -405,7 +405,7 @@ function renderEntryForm(entry){
 
   function textField(container, key, labelText, opts={}){
     const f = el('div','field');
-    f.innerHTML = `<label>${labelText}</label>`;
+    f.innerHTML = labelText ? `<label>${labelText}</label>` : '';
     const inputEl = opts.textarea ? el('textarea') : el('input');
     if(!opts.textarea) inputEl.type = 'text';
     inputEl.value = entry[key] || '';
@@ -451,25 +451,25 @@ function renderEntryForm(entry){
   // Dream
   const dreamBlock = el('div','section-block');
   dreamBlock.innerHTML = `<h2><span class="ic">💭</span> Dream</h2>`;
-  textField(dreamBlock, 'dream', 'Dream', {textarea:true, placeholder:'Write it all down, even the fuzzy parts'});
+  textField(dreamBlock, 'dream', '', {textarea:true, placeholder:'Write it all down, even the fuzzy parts'});
   wrap.appendChild(dreamBlock);
 
   // Feeling Upon Awakening
   const feelBlock = el('div','section-block');
   feelBlock.innerHTML = `<h2><span class="ic">☀️</span> Feeling Upon Awakening</h2>`;
-  textField(feelBlock, 'feelingUponWaking', 'Feeling Upon Awakening');
+  textField(feelBlock, 'feelingUponWaking', '');
   wrap.appendChild(feelBlock);
 
   // Interpretation
   const interpBlock = el('div','section-block');
   interpBlock.innerHTML = `<h2><span class="ic">🔍</span> Interpretation</h2>`;
-  textField(interpBlock, 'interpretation', 'Interpretation', {textarea:true});
+  textField(interpBlock, 'interpretation', '', {textarea:true});
   wrap.appendChild(interpBlock);
 
   // Note/Comment
   const noteBlock = el('div','section-block');
   noteBlock.innerHTML = `<h2><span class="ic">📝</span> Note / Comment</h2>`;
-  textField(noteBlock, 'note', 'Note / Comment', {textarea:true});
+  textField(noteBlock, 'note', '', {textarea:true});
   wrap.appendChild(noteBlock);
 
   const note2 = el('div','save-note','Everything here saves automatically on this device.');
@@ -483,7 +483,7 @@ function pv(val){
   return val ? `<span class="val">${escapeHtml(val)}</span>` : `<span class="val empty">—</span>`;
 }
 function printRow(label, val, full=false){
-  return `<div class="print-row${full?' full':''}"><span class="lbl">${label}:</span>${pv(val)}</div>`;
+  return `<div class="print-row${full?' full':''}">${label?`<span class="lbl">${label}:</span>`:''}${pv(val)}</div>`;
 }
 function buildPrintHTML(entry){
   const title = entry.date || 'Undated Dream';
@@ -517,22 +517,22 @@ function buildPrintHTML(entry){
 
       <div class="print-section">
         <h2>Dream</h2>
-        <div class="print-grid">${printRow('Dream', entry.dream, true)}</div>
+        <div class="print-grid">${printRow('', entry.dream, true)}</div>
       </div>
 
       <div class="print-section">
         <h2>Feeling Upon Awakening</h2>
-        <div class="print-grid">${printRow('Feeling', entry.feelingUponWaking, true)}</div>
+        <div class="print-grid">${printRow('', entry.feelingUponWaking, true)}</div>
       </div>
 
       <div class="print-section">
         <h2>Interpretation</h2>
-        <div class="print-grid">${printRow('Interpretation', entry.interpretation, true)}</div>
+        <div class="print-grid">${printRow('', entry.interpretation, true)}</div>
       </div>
 
       <div class="print-section">
         <h2>Note / Comment</h2>
-        <div class="print-grid">${printRow('Note', entry.note, true)}</div>
+        <div class="print-grid">${printRow('', entry.note, true)}</div>
       </div>
 
       <div class="print-footer">Dream Journal — exported from your digital journal</div>
